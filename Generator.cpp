@@ -17,18 +17,19 @@ std::string Generator::GetInput()
     questions.push_back("What's the last song you listened to?");
     questions.push_back("What's the most used emoji on your phone?");
 
-    std::string answers;
+    std::string input_string;
+    std::string temp_string;
+    int rand_index = 0;
     for (int i=0; i<3; i++) // output 3 random questions
     {
-        std::string temp_string;
-        int rand_index = rand()%questions.size();
+        rand_index = rand()%questions.size();
         std::cout << questions[rand_index] << std::endl;
         getline(std::cin, temp_string);
-        answers.append(temp_string);
-        answers.push_back(' ');
+        input_string.append(temp_string);
+        input_string.push_back(' ');
         questions.erase(questions.begin()+rand_index);
     }
-    return answers;
+    return input_string;
 }
 
 std::vector<std::string> Generator::SplitInput()
@@ -46,6 +47,64 @@ std::vector<std::string> Generator::SplitInput()
         }
     }
     return input_vector;
+}
+
+void Generator::ShuffleVector(std::vector<std::string> &vec)
+{
+    std::string temp_string;
+    int rand_index = 0;
+    for (std::size_t i=0; i<vec.size(); i++)
+    {
+        rand_index = rand()%vec.size();
+        temp_string = vec[i];
+        vec[i] = vec[rand_index];
+        vec[rand_index] = temp_string;
+    }
+}
+
+void Generator::ResizeVector(std::vector<std::string> &vec, int length)
+{
+    std::vector<std::string> temp_vector;
+    CopyVector(vec, temp_vector, length);
+    vec.assign(temp_vector.begin(), temp_vector.end());
+}
+
+void Generator::CopyVector(
+                           std::vector<std::string> &vec,
+                           std::vector<std::string> &temp_vector,
+                           int length
+                           )
+{
+    int temp_len = 0;
+    for (std::string str: vec)
+    {
+        temp_len += str.size()+1;
+        if (temp_len < length) temp_vector.push_back(str);
+        else if (temp_len == length)
+        {
+            temp_vector.push_back(str);
+            break;
+        }
+        else // temp_len > length
+        {
+            for (int i=0; i<temp_len-length-1; i++)
+                str.pop_back();
+            temp_vector.push_back(str);
+            break;
+        }
+    }
+    if (temp_len < length) CopyVector(vec, temp_vector, length-temp_len);
+}
+
+std::string Generator::GeneratePassword(int length)
+{
+    std::vector<std::string> vec(m_input_vector);
+    ShuffleVector(vec);
+    ResizeVector(vec, length);
+    for (std::string str: vec) std::cout << str << std::endl; // TEST
+    // TODO
+    std::string password;
+    return password;
 }
 
 
