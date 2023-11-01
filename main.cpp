@@ -9,8 +9,6 @@ int main()
 
     /////////// TEST ///////////
 
-    for (std::string str: g.m_input_vector) std::cout << str << std::endl;
-
     std::cout << 0 << std::endl;
     g.GeneratePassword(0);
 

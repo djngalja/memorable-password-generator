@@ -9,24 +9,19 @@
 class Generator
 {
         std::string m_input_string;
+        std::vector<std::string> m_input_vector;
+        std::vector<std::string> m_temp_vector;
 
         std::string GetInput();
         std::vector<std::string> SplitInput();
-        void ShuffleVector(std::vector<std::string> &vec);
-        void ResizeVector(std::vector<std::string> &vec, int length);
-        void CopyVector(
-                        std::vector<std::string> &vec,
-                        std::vector<std::string> &temp_vector,
-                        int length
-                        );
+        void ShuffleVector();
+        void ResizeVector(int length);
+        void CopyVector(std::vector<std::string> &temp_vector, int length);
+        bool ContainsDigit();
 
     public:
-
-        std::vector<std::string> m_input_vector;
-
         Generator();
         std::string GeneratePassword(int length);
-
 };
 
 #endif // GENERATOR_H

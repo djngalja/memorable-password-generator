@@ -49,34 +49,30 @@ std::vector<std::string> Generator::SplitInput()
     return input_vector;
 }
 
-void Generator::ShuffleVector(std::vector<std::string> &vec)
+void Generator::ShuffleVector()
 {
     std::string temp_string;
     int rand_index = 0;
-    for (std::size_t i=0; i<vec.size(); i++)
+    for (std::size_t i=0; i<m_temp_vector.size(); i++)
     {
-        rand_index = rand()%vec.size();
-        temp_string = vec[i];
-        vec[i] = vec[rand_index];
-        vec[rand_index] = temp_string;
+        rand_index = rand()%m_temp_vector.size();
+        temp_string = m_temp_vector[i];
+        m_temp_vector[i] = m_temp_vector[rand_index];
+        m_temp_vector[rand_index] = temp_string;
     }
 }
 
-void Generator::ResizeVector(std::vector<std::string> &vec, int length)
+void Generator::ResizeVector(int length)
 {
     std::vector<std::string> temp_vector;
-    CopyVector(vec, temp_vector, length);
-    vec.assign(temp_vector.begin(), temp_vector.end());
+    CopyVector(temp_vector, length);
+    m_temp_vector.assign(temp_vector.begin(), temp_vector.end());
 }
 
-void Generator::CopyVector(
-                           std::vector<std::string> &vec,
-                           std::vector<std::string> &temp_vector,
-                           int length
-                           )
+void Generator::CopyVector(std::vector<std::string> &temp_vector, int length)
 {
     int temp_len = 0;
-    for (std::string str: vec)
+    for (std::string str: m_temp_vector)
     {
         temp_len += str.size()+1;
         if (temp_len < length) temp_vector.push_back(str);
@@ -93,15 +89,26 @@ void Generator::CopyVector(
             break;
         }
     }
-    if (temp_len < length) CopyVector(vec, temp_vector, length-temp_len);
+    if (temp_len < length) CopyVector(temp_vector, length-temp_len);
 }
+
+
+bool Generator::ContainsDigit()
+{
+    for (std::string str: m_temp_vector)
+        for (char c: str)
+            if (isdigit(c)) return 1;
+    return 0;
+}
+
 
 std::string Generator::GeneratePassword(int length)
 {
-    std::vector<std::string> vec(m_input_vector);
-    ShuffleVector(vec);
-    ResizeVector(vec, length);
-    for (std::string str: vec) std::cout << str << std::endl; // TEST
+    m_temp_vector = m_input_vector;
+    ShuffleVector();
+    ResizeVector(length);
+    for (std::string str: m_temp_vector) std::cout << str << std::endl; // TEST
+    std::cout << "Contains digits: " << ContainsDigit() << std::endl; // TEST
     // TODO
     std::string password;
     return password;
