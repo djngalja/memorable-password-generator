@@ -8,15 +8,16 @@ Generator::Generator()
 
 std::string Generator::GetInput()
 {
-    std::vector<std::string> questions;
-    questions.push_back("What's your cellphone wallpaper?");
-    questions.push_back("What's an unusual skill you have?");
-    questions.push_back("What's your favourite animal?");
-    questions.push_back("What book do you own but have never read?");
-    questions.push_back("What's your biggest pet peeve?");
-    questions.push_back("What's the last song you listened to?");
-    questions.push_back("What's the most used emoji on your phone?");
-
+    std::vector<std::string> questions
+    {
+        "What's your cellphone wallpaper?",
+        "What's an unusual skill you have?",
+        "What's your favourite animal?",
+        "What book do you own but have never read?",
+        "What's your biggest pet peeve?",
+        "What's the last song you listened to?",
+        "What's the most used emoji on your phone?"
+    };
     std::string input_string;
     std::string temp_string;
     int rand_index = 0;
@@ -101,15 +102,44 @@ bool Generator::ContainsDigit()
     return 0;
 }
 
+bool Generator::ContainsChar(char c)
+{
+    for (std::string str: m_temp_vector)
+        for (char i: str)
+            if (i==c) return 1;
+    return 0;
+}
+
+void Generator::AddDigits()
+{
+    std::map<char, char> replacements =
+    {
+        {'b', '6'},{'q', '9'},{'S', '5'},{'l', '1'},{'O', '0'}
+    };
+    for (const auto& i: replacements)
+    {
+        if (ContainsChar(i.first))
+        {
+            for (std::string& str: m_temp_vector)
+            {
+                for (char& c: str)
+                    if (c==i.first)
+                        c = i.second;
+            }
+            break; // only 1 character replaced so that password remains human-readable
+        }
+    }
+}
+
 
 std::string Generator::GeneratePassword(int length)
 {
     m_temp_vector = m_input_vector;
     ShuffleVector();
     ResizeVector(length);
+    if (!ContainsDigit()) AddDigits();
     for (std::string str: m_temp_vector) std::cout << str << std::endl; // TEST
-    std::cout << "Contains digits: " << ContainsDigit() << std::endl; // TEST
-    // TODO
+    //TODO
     std::string password;
     return password;
 }

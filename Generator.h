@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <cstdlib>
+#include <map>
 
 class Generator
 {
@@ -18,6 +19,8 @@ class Generator
         void ResizeVector(int length);
         void CopyVector(std::vector<std::string> &temp_vector, int length);
         bool ContainsDigit();
+        bool ContainsChar(char c);
+        void AddDigits();
 
     public:
         Generator();
