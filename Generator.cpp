@@ -94,11 +94,35 @@ void Generator::CopyVector(std::vector<std::string> &temp_vector, int length)
 }
 
 
-bool Generator::ContainsDigit()
+bool Generator::ContainsDigits()
 {
     for (std::string str: m_temp_vector)
         for (char c: str)
             if (isdigit(c)) return 1;
+    return 0;
+}
+
+bool Generator::ContainsLetters()
+{
+    for (std::string str: m_temp_vector)
+        for (char c: str)
+            if (isalpha(c)) return 1;
+    return 0;
+}
+
+bool Generator::ContainsUpperCase()
+{
+    for (std::string str: m_temp_vector)
+        for (char c: str)
+            if (isupper(c)) return 1;
+    return 0;
+}
+
+bool Generator::ContainsLowerCase()
+{
+    for (std::string str: m_temp_vector)
+        for (char c: str)
+            if (islower(c)) return 1;
     return 0;
 }
 
@@ -110,36 +134,53 @@ bool Generator::ContainsChar(char c)
     return 0;
 }
 
-void Generator::AddDigits()
+void Generator::AddDigitsOrLetters(bool add_letters)
 {
     std::map<char, char> replacements =
     {
         {'b', '6'},{'q', '9'},{'S', '5'},{'l', '1'},{'O', '0'}
     };
-    for (const auto& i: replacements)
-    {
+    for (const auto &i: replacements)
         if (ContainsChar(i.first))
         {
-            for (std::string& str: m_temp_vector)
-            {
-                for (char& c: str)
-                    if (c==i.first)
-                        c = i.second;
-            }
+            for (std::string &str: m_temp_vector)
+                for (char &c: str)
+                    if (c == i.first) c = i.second;
             break; // only 1 character replaced so that password remains human-readable
         }
-    }
+    if (add_letters)
+        for (const auto &i: replacements)
+            if (ContainsChar(i.second))
+                for (std::string &str: m_temp_vector)
+                    for (char &c: str)
+                        if (c == i.second) c = i.first;
 }
 
+void Generator::AddLowerOrUpperCase(bool add_upper)
+{
+    if (add_upper)
+    {
+        for (std::string &str: m_temp_vector)
+            for (char &c: str)
+                if ((rand()%100) < 33) c = toupper(c); // probability is only 33% so that password is easier to memorise
+    }
+    else
+        for (std::string &str: m_temp_vector)
+            for (char &c: str)
+                if ((rand()%100) < 33) c = tolower(c);
+}
 
 std::string Generator::GeneratePassword(int length)
 {
     m_temp_vector = m_input_vector;
     ShuffleVector();
     ResizeVector(length);
-    if (!ContainsDigit()) AddDigits();
-    for (std::string str: m_temp_vector) std::cout << str << std::endl; // TEST
+    if (!ContainsDigits()) AddDigitsOrLetters();
+    if (!ContainsLetters()) AddDigitsOrLetters(true);
+    if (!ContainsUpperCase()) AddLowerOrUpperCase(true);
+    if (!ContainsLowerCase()) AddLowerOrUpperCase();
     //TODO
+    for (std::string str: m_temp_vector) std::cout << str << std::endl; // TEST
     std::string password;
     return password;
 }

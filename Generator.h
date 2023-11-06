@@ -18,9 +18,13 @@ class Generator
         void ShuffleVector();
         void ResizeVector(int length);
         void CopyVector(std::vector<std::string> &temp_vector, int length);
-        bool ContainsDigit();
+        bool ContainsDigits();
+        bool ContainsLetters();
+        bool ContainsUpperCase();
+        bool ContainsLowerCase();
         bool ContainsChar(char c);
-        void AddDigits();
+        void AddDigitsOrLetters(bool add_letters = false);
+        void AddLowerOrUpperCase(bool add_upper = false);
 
     public:
         Generator();
