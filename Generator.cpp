@@ -97,8 +97,14 @@ void Generator::CopyVector(std::vector<std::string> &temp_vector, int length)
 bool Generator::ContainsDigits()
 {
     for (std::string str: m_temp_vector)
-        for (char c: str)
-            if (isdigit(c)) return 1;
+        if (ContainsDigits(str)) return 1;
+    return 0;
+}
+
+bool Generator::ContainsDigits(const std::string &str)
+{
+    for (char c: str)
+        if (isdigit(c)) return 1;
     return 0;
 }
 
@@ -113,16 +119,28 @@ bool Generator::ContainsLetters()
 bool Generator::ContainsUpperCase()
 {
     for (std::string str: m_temp_vector)
-        for (char c: str)
-            if (isupper(c)) return 1;
+        if(ContainsUpperCase(str)) return 1;
+    return 0;
+}
+
+bool Generator::ContainsUpperCase(const std::string &str)
+{
+    for (char c: str)
+        if (isupper(c)) return 1;
     return 0;
 }
 
 bool Generator::ContainsLowerCase()
 {
     for (std::string str: m_temp_vector)
-        for (char c: str)
-            if (islower(c)) return 1;
+        if (ContainsLowerCase(str)) return 1;
+    return 0;
+}
+
+bool Generator::ContainsLowerCase(const std::string &str)
+{
+    for (char c: str)
+        if (islower(c)) return 1;
     return 0;
 }
 
@@ -130,7 +148,21 @@ bool Generator::ContainsChar(char c)
 {
     for (std::string str: m_temp_vector)
         for (char i: str)
-            if (i==c) return 1;
+            if (i == c) return 1;
+    return 0;
+}
+
+bool Generator::ContainsSpecialChar()
+{
+    for (std::string str: m_temp_vector)
+        if (ContainsSpecialChar(str)) return 1;
+    return 0;
+}
+
+bool Generator::ContainsSpecialChar(const std::string &str)
+{
+    for (char c: m_special_chars)
+        if (str.find(c) != std::string::npos) return 1;
     return 0;
 }
 
@@ -170,6 +202,26 @@ void Generator::AddLowerOrUpperCase(bool add_upper)
                 if ((rand()%100) < 33) c = tolower(c);
 }
 
+char Generator::RandomSpecialChar()
+{
+    return m_special_chars[rand()%m_special_chars.size()];
+}
+
+char Generator::RandomLowerCase()
+{
+    return (char)(rand() % 26 + 97);
+}
+
+char Generator::RandomUpperCase()
+{
+    return (char)(rand() % 26 + 65);
+}
+
+char Generator::RandomDigit()
+{
+    return (char)(rand() % 10 + 48);
+}
+
 std::string Generator::GeneratePassword(int length)
 {
     m_temp_vector = m_input_vector;
@@ -180,7 +232,13 @@ std::string Generator::GeneratePassword(int length)
     if (!ContainsUpperCase()) AddLowerOrUpperCase(true);
     if (!ContainsLowerCase()) AddLowerOrUpperCase();
     //TODO
+
     for (std::string str: m_temp_vector) std::cout << str << std::endl; // TEST
+    std::cout << "Random digit: " << RandomDigit() << std::endl; // TEST
+    std::cout << "Random lowercase letter: " << RandomLowerCase() << std::endl; // TEST
+    std::cout << "Random uppercase letter: " << RandomUpperCase() << std::endl; // TEST
+    std::cout << "Random special char: " << RandomSpecialChar() << std::endl; // TEST
+
     std::string password;
     return password;
 }
