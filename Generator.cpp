@@ -84,9 +84,9 @@ void Generator::CopyVector(std::vector<std::string> &temp_vector, int length)
         }
         else // temp_len > length
         {
-            for (int i=0; i<temp_len-length-1; i++)
-                str.pop_back();
-            temp_vector.push_back(str);
+            for (int i=0; i<temp_len-length; i++)
+                if (!str.empty()) str.pop_back();
+            if (!str.empty()) temp_vector.push_back(str);
             break;
         }
     }
@@ -194,7 +194,8 @@ void Generator::AddLowerOrUpperCase(bool add_upper)
     {
         for (std::string &str: m_temp_vector)
             for (char &c: str)
-                if ((rand()%100) < 33) c = toupper(c); // probability is only 33% so that password is easier to memorise
+                if ((rand()%100) < 33) c = toupper(c);
+                // probability is only 33% so that password is easier to memorise
     }
     else
         for (std::string &str: m_temp_vector)
@@ -222,6 +223,47 @@ char Generator::RandomDigit()
     return (char)(rand() % 10 + 48);
 }
 
+char Generator::RandomChar()
+{
+    int b = rand() % 4;
+    switch (b)
+    {
+    case 0: return RandomDigit();
+    case 1: return RandomUpperCase();
+    case 2: return RandomLowerCase();
+    default: return RandomSpecialChar();
+    }
+}
+
+char Generator::AddChar(const std::string &str)
+{
+    if (!(ContainsSpecialChar(str) || ContainsSpecialChar())) return RandomSpecialChar();
+    else if (!(ContainsDigits(str) || ContainsDigits())) return RandomDigit();
+    else if (!(ContainsUpperCase(str) || ContainsUpperCase())) return RandomUpperCase();
+    else if (!(ContainsLowerCase(str) || ContainsLowerCase())) return RandomLowerCase();
+    else return RandomChar();
+}
+
+void Generator::Test()
+{
+    for (std::string str: m_temp_vector) std::cout << str << std::endl;
+    std::cout << "m_input_vector size: " << m_input_vector.size() << std::endl;
+    std::cout << "m_temp_vector size: " << m_temp_vector.size() << std::endl;
+    std::cout << "Random digit: " << RandomDigit() << std::endl;
+    std::cout << "Random lowercase letter: " << RandomLowerCase() << std::endl;
+    std::cout << "Random uppercase letter: " << RandomUpperCase() << std::endl;
+    std::cout << "Random special char: " << RandomSpecialChar() << std::endl;
+    std::cout << "Random char: " << RandomChar() << std::endl;
+}
+
+std::string Generator::JoinVector()
+{
+    std::string password;
+    for (const std::string &str: m_temp_vector)
+        password += str + AddChar(password);
+    return password;
+}
+
 std::string Generator::GeneratePassword(int length)
 {
     m_temp_vector = m_input_vector;
@@ -231,15 +273,10 @@ std::string Generator::GeneratePassword(int length)
     if (!ContainsLetters()) AddDigitsOrLetters(true);
     if (!ContainsUpperCase()) AddLowerOrUpperCase(true);
     if (!ContainsLowerCase()) AddLowerOrUpperCase();
+    std::string password = JoinVector();
+    std::cout << "Preliminary password: " << password << std::endl; //TEST
     //TODO
-
-    for (std::string str: m_temp_vector) std::cout << str << std::endl; // TEST
-    std::cout << "Random digit: " << RandomDigit() << std::endl; // TEST
-    std::cout << "Random lowercase letter: " << RandomLowerCase() << std::endl; // TEST
-    std::cout << "Random uppercase letter: " << RandomUpperCase() << std::endl; // TEST
-    std::cout << "Random special char: " << RandomSpecialChar() << std::endl; // TEST
-
-    std::string password;
+    Test();
     return password;
 }
 

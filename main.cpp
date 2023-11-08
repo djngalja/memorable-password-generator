@@ -15,11 +15,11 @@ int main()
     std::cout << 5 << std::endl;
     g.GeneratePassword(5);
 
+    std::cout << 8 << std::endl;
+    g.GeneratePassword(8);
+
     std::cout << 10 << std::endl;
     g.GeneratePassword(10);
-
-    std::cout << 30 << std::endl;
-    g.GeneratePassword(30);
 
 
     system("pause");

@@ -35,6 +35,10 @@ class Generator
         char RandomLowerCase();
         char RandomUpperCase();
         char RandomDigit();
+        char RandomChar();
+        char AddChar(const std::string &str);
+        std::string JoinVector();
+        void Test();
 
     public:
         Generator();
