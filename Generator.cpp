@@ -63,16 +63,16 @@ void Generator::ShuffleVector()
     }
 }
 
-void Generator::ResizeVector(int length)
+void Generator::ResizeVector(std::size_t length)
 {
     std::vector<std::string> temp_vector;
     CopyVector(temp_vector, length);
     m_temp_vector.assign(temp_vector.begin(), temp_vector.end());
 }
 
-void Generator::CopyVector(std::vector<std::string> &temp_vector, int length)
+void Generator::CopyVector(std::vector<std::string> &temp_vector, std::size_t length)
 {
-    int temp_len = 0;
+    std::size_t temp_len = 0;
     for (std::string str: m_temp_vector)
     {
         temp_len += str.size()+1;
@@ -84,7 +84,7 @@ void Generator::CopyVector(std::vector<std::string> &temp_vector, int length)
         }
         else // temp_len > length
         {
-            for (int i=0; i<temp_len-length; i++)
+            for (std::size_t i=0; i<temp_len-length; i++)
                 if (!str.empty()) str.pop_back();
             if (!str.empty()) temp_vector.push_back(str);
             break;
@@ -235,13 +235,24 @@ char Generator::RandomChar()
     }
 }
 
-char Generator::AddChar(const std::string &str)
+char Generator::AddChar(const std::string &str, bool last)
 {
-    if (!(ContainsSpecialChar(str) || ContainsSpecialChar())) return RandomSpecialChar();
-    else if (!(ContainsDigits(str) || ContainsDigits())) return RandomDigit();
-    else if (!(ContainsUpperCase(str) || ContainsUpperCase())) return RandomUpperCase();
-    else if (!(ContainsLowerCase(str) || ContainsLowerCase())) return RandomLowerCase();
-    else return RandomChar();
+    if (last)
+    {
+        if (!ContainsSpecialChar(str)) return RandomSpecialChar();
+        else if (!ContainsDigits(str)) return RandomDigit();
+        else if (!ContainsUpperCase(str)) return RandomUpperCase();
+        else if (!ContainsLowerCase(str)) return RandomLowerCase();
+        else return RandomChar();
+    }
+    else
+    {
+        if (!(ContainsSpecialChar(str) || ContainsSpecialChar())) return RandomSpecialChar();
+        else if (!(ContainsDigits(str) || ContainsDigits())) return RandomDigit();
+        else if (!(ContainsUpperCase(str) || ContainsUpperCase())) return RandomUpperCase();
+        else if (!(ContainsLowerCase(str) || ContainsLowerCase())) return RandomLowerCase();
+        else return RandomChar();
+    }
 }
 
 void Generator::Test()
@@ -256,15 +267,41 @@ void Generator::Test()
     std::cout << "Random char: " << RandomChar() << std::endl;
 }
 
-std::string Generator::JoinVector()
+std::string Generator::JoinVector(std::size_t length)
 {
     std::string password;
     for (const std::string &str: m_temp_vector)
         password += str + AddChar(password);
+    if (password.size() != length) password += AddChar(password, true);
     return password;
 }
 
-std::string Generator::GeneratePassword(int length)
+void Generator::ReplaceChar(std::string &str, char c)
+{
+    int digit_count = 0, lower_count = 0, upper_count = 0, special_count = 0;
+    for (char &ch: str)
+    {
+        if (isdigit(ch)) digit_count++;
+        else if (islower(ch)) lower_count++;
+        else if (isupper(ch)) upper_count++;
+        else special_count++;
+        if (digit_count == 2 || lower_count == 2 || upper_count == 2 || special_count == 2)
+        {
+            ch = c;
+            break;
+        }
+    }
+}
+
+void Generator::FinalCheck(std::string &str)
+{
+    if (!ContainsDigits(str)) ReplaceChar(str, RandomDigit());
+    if (!ContainsLowerCase(str)) ReplaceChar(str, RandomLowerCase());
+    if (!ContainsUpperCase(str)) ReplaceChar(str, RandomUpperCase());
+    if (!ContainsSpecialChar(str)) ReplaceChar(str, RandomSpecialChar());
+}
+
+std::string Generator::GeneratePassword(std::size_t length)
 {
     m_temp_vector = m_input_vector;
     ShuffleVector();
@@ -273,10 +310,11 @@ std::string Generator::GeneratePassword(int length)
     if (!ContainsLetters()) AddDigitsOrLetters(true);
     if (!ContainsUpperCase()) AddLowerOrUpperCase(true);
     if (!ContainsLowerCase()) AddLowerOrUpperCase();
-    std::string password = JoinVector();
+    std::string password = JoinVector(length);
     std::cout << "Preliminary password: " << password << std::endl; //TEST
-    //TODO
-    Test();
+    FinalCheck(password);
+    std::cout << "Password: " << password << std::endl << std:: endl; //TEST
+    //Test();
     return password;
 }
 
