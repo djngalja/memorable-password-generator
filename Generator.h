@@ -9,13 +9,12 @@
 
 class Generator
 {
-        std::string m_input_string;
         std::vector<std::string> m_input_vector;
         std::vector<std::string> m_temp_vector;
         const std::string m_special_chars = "'-!\"#$%&()*,./:;?@[]^_`{|}~+<=>";
 
         std::string GetInput();
-        std::vector<std::string> SplitInput();
+        std::vector<std::string> SplitInput(const std::string &input_string);
         void ShuffleVector();
         void ResizeVector(std::size_t length);
         void CopyVector(std::vector<std::string> &temp_vector, std::size_t length);
@@ -44,7 +43,8 @@ class Generator
 
     public:
         Generator();
-        std::string GeneratePassword(std::size_t length);
+        void Reset();
+        std::string GeneratePassword();
 };
 
 #endif // GENERATOR_H

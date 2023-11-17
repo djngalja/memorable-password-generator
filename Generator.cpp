@@ -2,8 +2,12 @@
 
 Generator::Generator()
 {
-    m_input_string = GetInput();
-    m_input_vector = SplitInput();
+    m_input_vector = SplitInput(GetInput());
+}
+
+void Generator::Reset()
+{
+    m_input_vector = SplitInput(GetInput());
 }
 
 std::string Generator::GetInput()
@@ -33,11 +37,11 @@ std::string Generator::GetInput()
     return input_string;
 }
 
-std::vector<std::string> Generator::SplitInput()
+std::vector<std::string> Generator::SplitInput(const std::string &input_string)
 {
     std::vector<std::string> input_vector;
     std::string temp_string;
-    for (char c: m_input_string)
+    for (char c: input_string)
     {
         if (c != ' ')
             temp_string.push_back(c);
@@ -257,14 +261,33 @@ char Generator::AddChar(const std::string &str, bool last)
 
 void Generator::Test()
 {
-    for (std::string str: m_temp_vector) std::cout << str << std::endl;
-    std::cout << "m_input_vector size: " << m_input_vector.size() << std::endl;
-    std::cout << "m_temp_vector size: " << m_temp_vector.size() << std::endl;
-    std::cout << "Random digit: " << RandomDigit() << std::endl;
-    std::cout << "Random lowercase letter: " << RandomLowerCase() << std::endl;
-    std::cout << "Random uppercase letter: " << RandomUpperCase() << std::endl;
-    std::cout << "Random special char: " << RandomSpecialChar() << std::endl;
-    std::cout << "Random char: " << RandomChar() << std::endl;
+    for (int i=0; i<100; i++)
+        if (!isdigit(RandomDigit()))
+        {
+            std::cout << "function RandomDigit() failed" << std::endl;
+            break;
+        }
+
+    for (int i=0; i<100; i++)
+        if (!islower(RandomLowerCase()))
+        {
+            std::cout << "function RandomLowerCase() failed" << std::endl;
+            break;
+        }
+
+    for (int i=0; i<100; i++)
+        if (!isupper(RandomUpperCase()))
+        {
+            std::cout << "function RandomUpperCase() failed" << std::endl;
+            break;
+        }
+
+    for (int i=0; i<100; i++)
+        if (isalnum(RandomSpecialChar()))
+        {
+            std::cout << "function RandomSpecialChar() failed" << std::endl;
+            break;
+        }
 }
 
 std::string Generator::JoinVector(std::size_t length)
@@ -301,20 +324,22 @@ void Generator::FinalCheck(std::string &str)
     if (!ContainsSpecialChar(str)) ReplaceChar(str, RandomSpecialChar());
 }
 
-std::string Generator::GeneratePassword(std::size_t length)
+std::string Generator::GeneratePassword()
 {
     m_temp_vector = m_input_vector;
     ShuffleVector();
+    std::size_t length = 0;
+    std::cout << "Enter password length:" << std::endl;
+    std::cin >> length;
     ResizeVector(length);
     if (!ContainsDigits()) AddDigitsOrLetters();
     if (!ContainsLetters()) AddDigitsOrLetters(true);
     if (!ContainsUpperCase()) AddLowerOrUpperCase(true);
     if (!ContainsLowerCase()) AddLowerOrUpperCase();
     std::string password = JoinVector(length);
-    std::cout << "Preliminary password: " << password << std::endl; //TEST
     FinalCheck(password);
-    std::cout << "Password: " << password << std::endl << std:: endl; //TEST
-    //Test();
+    std::cout << "\nPassword: " << password << std:: endl; //TEST
+    Test();
     return password;
 }
 
