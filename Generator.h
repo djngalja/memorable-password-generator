@@ -11,12 +11,14 @@ class Generator
 {
         std::vector<std::string> m_input_vector;
         std::vector<std::string> m_temp_vector;
+        std::size_t m_length;
         const std::string m_special_chars = "'-!\"#$%&()*,./:;?@[]^_`{|}~+<=>";
 
         std::string GetInput();
+        std::size_t GetLength();
         std::vector<std::string> SplitInput(const std::string &input_string);
         void ShuffleVector();
-        void ResizeVector(std::size_t length);
+        void ResizeVector();
         void CopyVector(std::vector<std::string> &temp_vector, std::size_t length);
         bool ContainsDigits();
         bool ContainsDigits(const std::string &str);
@@ -36,15 +38,16 @@ class Generator
         char RandomDigit();
         char RandomChar();
         char AddChar(const std::string &str, bool last = false);
-        std::string JoinVector(std::size_t length);
+        std::string JoinVector();
         void FinalCheck(std::string &str);
         void ReplaceChar(std::string &str, char c);
         void Test();
 
     public:
         Generator();
-        void Reset();
-        std::string GeneratePassword();
+        void SetInput();
+        void SetLength();
+        void GeneratePassword();
 };
 
 #endif // GENERATOR_H

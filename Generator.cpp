@@ -3,11 +3,25 @@
 Generator::Generator()
 {
     m_input_vector = SplitInput(GetInput());
+    m_length = GetLength();
 }
 
-void Generator::Reset()
+void Generator::SetInput()
 {
     m_input_vector = SplitInput(GetInput());
+}
+
+void Generator::SetLength()
+{
+    m_length = GetLength();
+}
+
+std::size_t Generator::GetLength()
+{
+    std::size_t length = 0;
+    std::cout << "Enter password length: ";
+    std::cin >> length;
+    return length;
 }
 
 std::string Generator::GetInput()
@@ -28,7 +42,7 @@ std::string Generator::GetInput()
     for (int i=0; i<3; i++) // output 3 random questions
     {
         rand_index = rand()%questions.size();
-        std::cout << questions[rand_index] << std::endl;
+        std::cout << i+1 << ". " << questions[rand_index] << "\n\t";
         getline(std::cin, temp_string);
         input_string.append(temp_string);
         input_string.push_back(' ');
@@ -67,10 +81,10 @@ void Generator::ShuffleVector()
     }
 }
 
-void Generator::ResizeVector(std::size_t length)
+void Generator::ResizeVector()
 {
     std::vector<std::string> temp_vector;
-    CopyVector(temp_vector, length);
+    CopyVector(temp_vector, m_length);
     m_temp_vector.assign(temp_vector.begin(), temp_vector.end());
 }
 
@@ -290,12 +304,12 @@ void Generator::Test()
         }
 }
 
-std::string Generator::JoinVector(std::size_t length)
+std::string Generator::JoinVector()
 {
     std::string password;
     for (const std::string &str: m_temp_vector)
         password += str + AddChar(password);
-    if (password.size() != length) password += AddChar(password, true);
+    if (password.size() != m_length) password += AddChar(password, true);
     return password;
 }
 
@@ -324,23 +338,19 @@ void Generator::FinalCheck(std::string &str)
     if (!ContainsSpecialChar(str)) ReplaceChar(str, RandomSpecialChar());
 }
 
-std::string Generator::GeneratePassword()
+void Generator::GeneratePassword()
 {
     m_temp_vector = m_input_vector;
     ShuffleVector();
-    std::size_t length = 0;
-    std::cout << "Enter password length:" << std::endl;
-    std::cin >> length;
-    ResizeVector(length);
+    ResizeVector();
     if (!ContainsDigits()) AddDigitsOrLetters();
     if (!ContainsLetters()) AddDigitsOrLetters(true);
     if (!ContainsUpperCase()) AddLowerOrUpperCase(true);
     if (!ContainsLowerCase()) AddLowerOrUpperCase();
-    std::string password = JoinVector(length);
+    std::string password = JoinVector();
     FinalCheck(password);
-    std::cout << "\nPassword: " << password << std:: endl; //TEST
-    Test();
-    return password;
+    std::cout << "\nPassword: " << password << "\n\n";
+    //Test();
 }
 
 

@@ -9,12 +9,16 @@ int main()
     Generator g;
     g.GeneratePassword();
 
-    int choice = 0;
+    int option = 0;
     do
     {
-        std::cout << " 0. Exit\n 1. New password length\n 2. New questions" << std::endl;
-        std::cin >> choice;
-        switch (choice)
+        std::cout << "\t[0] Exit" << std::endl;
+        std::cout << "\t[1] Generate new password" << std::endl;
+        std::cout << "\t[2] Change password length" << std::endl;
+        std::cout << "\t[3] Change input" << std::endl;
+
+        std::cin >> option;
+        switch (option)
         {
         case 0: break;
         case 1:
@@ -22,17 +26,21 @@ int main()
                 g.GeneratePassword();
                 break;
             }
+        case 2:
+            {
+                g.SetLength();
+                g.GeneratePassword();
+                break;
+            }
         default:
             {
                 std::cin.ignore();
-                g.Reset();
+                g.SetInput();
                 g.GeneratePassword();
             }
         }
     }
-    while (choice != 0);
+    while (option != 0);
 
-
-    system("pause");
     return 0;
 }
