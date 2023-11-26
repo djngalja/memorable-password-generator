@@ -18,6 +18,13 @@ int main()
         std::cout << "\t[3] Change input" << std::endl;
 
         std::cin >> option;
+        if (!std::cin)
+        {
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            option = 4;
+        }
+
         switch (option)
         {
         case 0: break;
@@ -32,13 +39,20 @@ int main()
                 g.GeneratePassword();
                 break;
             }
-        default:
+        case 3:
             {
-                std::cin.ignore();
+                std::cin.ignore(10000, '\n');
                 g.SetInput();
                 g.GeneratePassword();
+                break;
+            }
+        default:
+            {
+                std::cout << "Invalid input. Enter a number between 0 and 3." << std::endl;
+                break;
             }
         }
+
     }
     while (option != 0);
 
