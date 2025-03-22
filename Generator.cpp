@@ -68,19 +68,6 @@ std::vector<std::string> Generator::SplitInput(const std::string &input_string)
     return input_vector;
 }
 
-void Generator::ShuffleVector()
-{
-    std::string temp_string;
-    int rand_index = 0;
-    for (std::size_t i=0; i<m_temp_vector.size(); i++)
-    {
-        rand_index = rand()%m_temp_vector.size();
-        temp_string = m_temp_vector[i];
-        m_temp_vector[i] = m_temp_vector[rand_index];
-        m_temp_vector[rand_index] = temp_string;
-    }
-}
-
 void Generator::ResizeVector()
 {
     std::vector<std::string> temp_vector;
@@ -115,14 +102,7 @@ void Generator::CopyVector(std::vector<std::string> &temp_vector, std::size_t le
 bool Generator::ContainsDigits()
 {
     for (std::string str: m_temp_vector)
-        if (ContainsDigits(str)) return 1;
-    return 0;
-}
-
-bool Generator::ContainsDigits(const std::string &str)
-{
-    for (char c: str)
-        if (isdigit(c)) return 1;
+        if (has_digit(str)) return 1;
     return 0;
 }
 
@@ -137,14 +117,7 @@ bool Generator::ContainsLetters()
 bool Generator::ContainsUpperCase()
 {
     for (std::string str: m_temp_vector)
-        if(ContainsUpperCase(str)) return 1;
-    return 0;
-}
-
-bool Generator::ContainsUpperCase(const std::string &str)
-{
-    for (char c: str)
-        if (isupper(c)) return 1;
+        if(has_up_case(str)) return 1;
     return 0;
 }
 
@@ -258,16 +231,16 @@ char Generator::AddChar(const std::string &str, bool last)
     if (last)
     {
         if (!ContainsSpecialChar(str)) return RandomSpecialChar();
-        else if (!ContainsDigits(str)) return RandomDigit();
-        else if (!ContainsUpperCase(str)) return RandomUpperCase();
+        else if (!has_digit(str)) return RandomDigit();
+        else if (!has_up_case(str)) return RandomUpperCase();
         else if (!ContainsLowerCase(str)) return RandomLowerCase();
         else return RandomChar();
     }
     else
     {
         if (!(ContainsSpecialChar(str) || ContainsSpecialChar())) return RandomSpecialChar();
-        else if (!(ContainsDigits(str) || ContainsDigits())) return RandomDigit();
-        else if (!(ContainsUpperCase(str) || ContainsUpperCase())) return RandomUpperCase();
+        else if (!(has_digit(str) || ContainsDigits())) return RandomDigit();
+        else if (!(has_up_case(str) || ContainsUpperCase())) return RandomUpperCase();
         else if (!(ContainsLowerCase(str) || ContainsLowerCase())) return RandomLowerCase();
         else return RandomChar();
     }
@@ -332,16 +305,16 @@ void Generator::ReplaceChar(std::string &str, char c)
 
 void Generator::FinalCheck(std::string &str)
 {
-    if (!ContainsDigits(str)) ReplaceChar(str, RandomDigit());
+    if (!has_digit(str)) ReplaceChar(str, RandomDigit());
     if (!ContainsLowerCase(str)) ReplaceChar(str, RandomLowerCase());
-    if (!ContainsUpperCase(str)) ReplaceChar(str, RandomUpperCase());
+    if (!has_up_case(str)) ReplaceChar(str, RandomUpperCase());
     if (!ContainsSpecialChar(str)) ReplaceChar(str, RandomSpecialChar());
 }
 
 void Generator::GeneratePassword()
 {
     m_temp_vector = m_input_vector;
-    ShuffleVector();
+    shuffle_vec(m_temp_vector);
     ResizeVector();
     if (!ContainsDigits()) AddDigitsOrLetters();
     if (!ContainsLetters()) AddDigitsOrLetters(true);
@@ -353,4 +326,22 @@ void Generator::GeneratePassword()
     //Test();
 }
 
+void shuffle_vec(std::vector<std::string>& vec) {
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(vec.begin(), vec.end(), g);
+}
 
+bool has_up_case(const std::string& str) {
+    for (char c : str) {
+        if (std::isupper(c)) { return true; }
+    }
+    return false;
+}
+
+bool has_digit(const std::string& str) {
+    for (char c : str) {
+        if (std::isdigit(c)) { return true; }
+    }
+    return false;
+}
