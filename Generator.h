@@ -2,6 +2,7 @@
 #define GENERATOR_H_INCLUDED
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <cstdlib>
@@ -49,5 +50,6 @@ public:
 void shuffle_vec(std::vector<std::string>&);
 bool has_digit(const std::string&);
 bool has_up_case(const std::string&);
+bool get_questions(const std::string&, std::vector<std::string>&);
 
 #endif // GENERATOR_H_INCLUDED
