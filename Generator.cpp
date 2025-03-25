@@ -24,18 +24,11 @@ std::size_t Generator::GetLength()
     return length;
 }
 
-std::string Generator::GetInput()
-{
-    std::vector<std::string> questions
-    {
-        "What's your cellphone wallpaper?",
-        "What's an unusual skill you have?",
-        "What's your favourite animal?",
-        "What book do you own but have never read?",
-        "What's your biggest pet peeve?",
-        "What's the last song you listened to?",
-        "What's the most used emoji on your phone?"
-    };
+std::string Generator::GetInput() {
+    std::vector<std::string> questions;
+    if (!get_questions("security_questions.txt", questions)) {
+        // TODO
+    }
     std::string input_string;
     std::string temp_string;
     int rand_index = 0;
@@ -246,37 +239,6 @@ char Generator::AddChar(const std::string &str, bool last)
     }
 }
 
-void Generator::Test()
-{
-    for (int i=0; i<100; i++)
-        if (!isdigit(RandomDigit()))
-        {
-            std::cout << "function RandomDigit() failed" << std::endl;
-            break;
-        }
-
-    for (int i=0; i<100; i++)
-        if (!islower(RandomLowerCase()))
-        {
-            std::cout << "function RandomLowerCase() failed" << std::endl;
-            break;
-        }
-
-    for (int i=0; i<100; i++)
-        if (!isupper(RandomUpperCase()))
-        {
-            std::cout << "function RandomUpperCase() failed" << std::endl;
-            break;
-        }
-
-    for (int i=0; i<100; i++)
-        if (isalnum(RandomSpecialChar()))
-        {
-            std::cout << "function RandomSpecialChar() failed" << std::endl;
-            break;
-        }
-}
-
 std::string Generator::JoinVector()
 {
     std::string password;
@@ -344,4 +306,16 @@ bool has_digit(const std::string& str) {
         if (std::isdigit(c)) { return true; }
     }
     return false;
+}
+
+bool get_questions(const std::string& f_name, std::vector<std::string>& questions) {
+    std::ifstream file(f_name);
+    if (!file) {
+        std::cout << "File <" << f_name << "> not found\n";
+        return false;
+    }
+    for (std::string temp; getline(file, temp, '\n');) {
+        questions.push_back(temp);
+    }
+    return true;
 }
