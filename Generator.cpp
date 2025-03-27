@@ -299,11 +299,13 @@ std::vector<std::string> get_input() {
     return vec;
 }
 
-void split_input(std::vector<std::string>& vec) { // TODO: test (empty sp, repeated emtpy sp, spec chars, etc.)
+void split_input(std::vector<std::string>& vec) {
     std::string str;
     getline(std::cin, str, '\n');
     std::istringstream line(str);
     for (std::string str2; getline(line, str2, ' ');) {
-        vec.push_back(str2);
+        if (!str2.empty()) {
+            vec.push_back(str2);
+        }
     }
 }
