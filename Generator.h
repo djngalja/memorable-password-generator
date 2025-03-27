@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <cstdlib>
@@ -15,9 +16,7 @@ class Generator {
     std::vector<std::string> m_temp_vector;
     std::size_t m_length;
     const std::string m_special_chars = "'-!\"#$%&()*,./:;?@[]^_`{|}~+<=>";
-    std::string GetInput();
     std::size_t GetLength();
-    std::vector<std::string> SplitInput(const std::string &input_string);
     void ResizeVector();
     void CopyVector(std::vector<std::string> &temp_vector, std::size_t length);
     bool ContainsDigits();
@@ -51,5 +50,7 @@ void shuffle_vec(std::vector<std::string>&);
 bool has_digit(const std::string&);
 bool has_up_case(const std::string&);
 bool get_questions(const std::string&, std::vector<std::string>&);
+std::vector<std::string> get_input();
+void split_input(std::vector<std::string>&);
 
 #endif // GENERATOR_H_INCLUDED
