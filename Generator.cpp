@@ -2,13 +2,13 @@
 
 Generator::Generator()
 {
-    m_input_vector = SplitInput(GetInput());
+    m_input_vector = get_input();
     m_length = GetLength();
 }
 
 void Generator::SetInput()
 {
-    m_input_vector = SplitInput(GetInput());
+    m_input_vector = get_input();
 }
 
 void Generator::SetLength()
@@ -22,43 +22,6 @@ std::size_t Generator::GetLength()
     std::cout << "Enter password length: ";
     std::cin >> length;
     return length;
-}
-
-std::string Generator::GetInput() {
-    std::vector<std::string> questions;
-    if (!get_questions("security_questions.txt", questions)) {
-        // TODO
-    }
-    std::string input_string;
-    std::string temp_string;
-    int rand_index = 0;
-    for (int i=0; i<3; i++) // output 3 random questions
-    {
-        rand_index = rand()%questions.size();
-        std::cout << i+1 << ". " << questions[rand_index] << "\n\t";
-        getline(std::cin, temp_string);
-        input_string.append(temp_string);
-        input_string.push_back(' ');
-        questions.erase(questions.begin()+rand_index);
-    }
-    return input_string;
-}
-
-std::vector<std::string> Generator::SplitInput(const std::string &input_string)
-{
-    std::vector<std::string> input_vector;
-    std::string temp_string;
-    for (char c: input_string)
-    {
-        if (c != ' ')
-            temp_string.push_back(c);
-        if (c == ' ' && !temp_string.empty())
-        {
-            input_vector.push_back(temp_string);
-            temp_string.clear();
-        }
-    }
-    return input_vector;
 }
 
 void Generator::ResizeVector()
@@ -318,4 +281,29 @@ bool get_questions(const std::string& f_name, std::vector<std::string>& question
         questions.push_back(temp);
     }
     return true;
+}
+
+std::vector<std::string> get_input() {
+    std::vector<std::string> questions;
+    if (!get_questions("security_questions.txt", questions)) {
+        // TODO
+    }
+    std::vector<std::string> vec;
+    int rand_id {};
+    for (int i=0; i<3; i++) { // output 3 random questions
+        rand_id = rand()%questions.size();
+        std::cout << i+1 << ". " << questions[rand_id] << "\n\t";
+        split_input(vec);
+        questions.erase(questions.begin() + rand_id);
+    }
+    return vec;
+}
+
+void split_input(std::vector<std::string>& vec) { // TODO: test (empty sp, repeated emtpy sp, spec chars, etc.)
+    std::string str;
+    getline(std::cin, str, '\n');
+    std::istringstream line(str);
+    for (std::string str2; getline(line, str2, ' ');) {
+        vec.push_back(str2);
+    }
 }
