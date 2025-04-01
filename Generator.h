@@ -16,7 +16,6 @@ class Generator {
     std::vector<std::string> m_temp_vector;
     std::size_t m_length;
     const std::string m_special_chars = "'-!\"#$%&()*,./:;?@[]^_`{|}~+<=>";
-    std::size_t GetLength();
     void ResizeVector();
     void CopyVector(std::vector<std::string> &temp_vector, std::size_t length);
     bool ContainsDigits();
@@ -46,11 +45,13 @@ public:
     void GeneratePassword();
 };
 
+// helper functions:
 void shuffle_vec(std::vector<std::string>&);
 bool has_digit(const std::string&);
 bool has_up_case(const std::string&);
 bool get_questions(const std::string&, std::vector<std::string>&);
 std::vector<std::string> get_input();
-void split_input(std::vector<std::string>&);
+std::size_t get_len();
+void split_input(const std::string&, std::vector<std::string>&);
 
 #endif // GENERATOR_H_INCLUDED
