@@ -1,9 +1,8 @@
 #include "Generator.h"
 
-Generator::Generator()
-{
+Generator::Generator() : m_input_vector{}, m_length{} {
     m_input_vector = get_input();
-    m_length = GetLength();
+    m_length = get_len();
 }
 
 void Generator::SetInput()
@@ -13,15 +12,7 @@ void Generator::SetInput()
 
 void Generator::SetLength()
 {
-    m_length = GetLength();
-}
-
-std::size_t Generator::GetLength()
-{
-    std::size_t length = 0;
-    std::cout << "Enter password length: ";
-    std::cin >> length;
-    return length;
+    m_length = get_len();
 }
 
 void Generator::ResizeVector()
@@ -252,7 +243,7 @@ void Generator::GeneratePassword()
 }
 
 void shuffle_vec(std::vector<std::string>& vec) {
-    std::random_device rd;
+    static std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(vec.begin(), vec.end(), g);
 }
@@ -288,24 +279,29 @@ std::vector<std::string> get_input() {
     if (!get_questions("security_questions.txt", questions)) {
         // TODO
     }
-    std::vector<std::string> vec;
-    int rand_id {};
-    for (int i=0; i<3; i++) { // output 3 random questions
-        rand_id = rand()%questions.size();
-        std::cout << i+1 << ". " << questions[rand_id] << "\n\t";
-        split_input(vec);
-        questions.erase(questions.begin() + rand_id);
+    shuffle_vec(questions); // to output questions in random order
+    std::vector<std::string> input;
+    for (int i=0; i<3; i++) {
+        std::cout << i+1 << ". " << questions[i] << "\n\t";
+        std::string str;
+        getline(std::cin, str);
+        split_input(str, input);
     }
-    return vec;
+    return input;
 }
 
-void split_input(std::vector<std::string>& vec) {
-    std::string str;
-    getline(std::cin, str, '\n');
+void split_input(const std::string& str, std::vector<std::string>& vec) {
     std::istringstream line(str);
     for (std::string str2; getline(line, str2, ' ');) {
         if (!str2.empty()) {
             vec.push_back(str2);
         }
     }
+}
+
+std::size_t get_len() {
+    std::size_t len {};
+    std::cout << "Enter password length: ";
+    std::cin >> len; // TODO: input check
+    return len;
 }
