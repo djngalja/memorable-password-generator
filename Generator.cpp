@@ -5,241 +5,241 @@ Generator::Generator() : m_input_vector{}, m_length{} {
     m_length = get_len();
 }
 
-void Generator::SetInput()
-{
+void Generator::SetInput() {
     m_input_vector = get_input();
 }
 
-void Generator::SetLength()
-{
+void Generator::SetLength() {
     m_length = get_len();
 }
 
-void Generator::ResizeVector()
-{
-    std::vector<std::string> temp_vector;
-    CopyVector(temp_vector, m_length);
-    m_temp_vector.assign(temp_vector.begin(), temp_vector.end());
-}
-
-void Generator::CopyVector(std::vector<std::string> &temp_vector, std::size_t length)
-{
-    std::size_t temp_len = 0;
-    for (std::string str: m_temp_vector)
-    {
-        temp_len += str.size()+1;
-        if (temp_len < length) temp_vector.push_back(str);
-        else if (temp_len == length)
-        {
-            temp_vector.push_back(str);
-            break;
-        }
-        else // temp_len > length
-        {
-            for (std::size_t i=0; i<temp_len-length; i++)
-                if (!str.empty()) str.pop_back();
-            if (!str.empty()) temp_vector.push_back(str);
-            break;
+bool has_letter(const std::vector<std::string>& vec) {
+    for (const auto& str : vec) {
+        for (char c : str) {
+            if (isalpha(c)) { return true; }
         }
     }
-    if (temp_len < length) CopyVector(temp_vector, length-temp_len);
+    return false;
 }
 
-
-bool Generator::ContainsDigits()
-{
-    for (std::string str: m_temp_vector)
-        if (has_digit(str)) return 1;
-    return 0;
+bool has_up_case(const std::vector<std::string>& vec) {
+    for (const auto& str : vec) {
+        if (has_up_case(str)) { return true; }
+    }
+    return false;
 }
 
-bool Generator::ContainsLetters()
-{
-    for (std::string str: m_temp_vector)
-        for (char c: str)
-            if (isalpha(c)) return 1;
-    return 0;
+bool has_low_case(const std::vector<std::string>& vec) {
+    for (const std::string& str : vec) {
+        if (has_low_case(str)) { return true;}
+    }
+    return false;
 }
 
-bool Generator::ContainsUpperCase()
-{
-    for (std::string str: m_temp_vector)
-        if(has_up_case(str)) return 1;
-    return 0;
+bool has_low_case(const std::string& str) {
+    for (char c : str) {
+        if (islower(c)) { return true; }
+    }
+    return false;
 }
 
-bool Generator::ContainsLowerCase()
-{
-    for (std::string str: m_temp_vector)
-        if (ContainsLowerCase(str)) return 1;
-    return 0;
+bool has_char(const std::vector<std::string>& vec, char c) {
+    for (const std::string& str : vec) {
+        for (char i : str) {
+            if (i == c) { return true; }
+        }
+    }
+    return false;
 }
 
-bool Generator::ContainsLowerCase(const std::string &str)
-{
-    for (char c: str)
-        if (islower(c)) return 1;
-    return 0;
+bool has_sp_char(const std::string& sp_chars, const std::vector<std::string>& vec) {
+    for (const std::string& str : vec) {
+        if (has_sp_char(sp_chars, str)) { return true; }
+    }
+    return false;
 }
 
-bool Generator::ContainsChar(char c)
-{
-    for (std::string str: m_temp_vector)
-        for (char i: str)
-            if (i == c) return 1;
-    return 0;
+bool has_sp_char(const std::string& sp_chars, const std::string& str) {
+    for (char c : sp_chars) {
+        if (str.find(c) != std::string::npos) {
+                return true;
+        }
+    }
+    return false;
 }
 
-bool Generator::ContainsSpecialChar()
-{
-    for (std::string str: m_temp_vector)
-        if (ContainsSpecialChar(str)) return 1;
-    return 0;
-}
-
-bool Generator::ContainsSpecialChar(const std::string &str)
-{
-    for (char c: m_special_chars)
-        if (str.find(c) != std::string::npos) return 1;
-    return 0;
-}
-
-void Generator::AddDigitsOrLetters(bool add_letters)
-{
+void add_digit_or_letters(std::vector<std::string>& vec, bool add_letters) {
     std::map<char, char> replacements =
-    {
-        {'b', '6'},{'q', '9'},{'S', '5'},{'l', '1'},{'O', '0'}
-    };
-    for (const auto &i: replacements)
-        if (ContainsChar(i.first))
-        {
-            for (std::string &str: m_temp_vector)
-                for (char &c: str)
-                    if (c == i.first) c = i.second;
-            break; // only 1 character replaced so that password remains human-readable
+    { {'b', '6'},{'q', '9'},{'S', '5'},{'l', '1'},{'O', '0'} };
+    for (const auto& i : replacements) {
+        if (has_char(vec, i.first)) { // TODO: combine this f with v
+            for (std::string& str : vec) {
+                for (char& c : str) {
+                    if (c == i.first) { c = i.second; }
+                }
+            }
+            // only 1 character replaced so that password remains human-readable
+            break;
         }
-    if (add_letters)
-        for (const auto &i: replacements)
-            if (ContainsChar(i.second))
-                for (std::string &str: m_temp_vector)
-                    for (char &c: str)
-                        if (c == i.second) c = i.first;
-}
-
-void Generator::AddLowerOrUpperCase(bool add_upper)
-{
-    if (add_upper)
-    {
-        for (std::string &str: m_temp_vector)
-            for (char &c: str)
-                if ((rand()%100) < 33) c = toupper(c);
-                // probability is only 33% so that password is easier to memorise
     }
-    else
-        for (std::string &str: m_temp_vector)
-            for (char &c: str)
-                if ((rand()%100) < 33) c = tolower(c);
+    if (add_letters) {
+        for (const auto& i : replacements) {
+            if (has_char(vec, i.second)) {
+                for (std::string& str : vec) {
+                    for (char& c : str) {
+                        if (c == i.second) { c = i.first; }
+                    }
+                }
+            }
+        }
+
+    }
 }
 
-char Generator::RandomSpecialChar()
-{
-    return m_special_chars[rand()%m_special_chars.size()];
+void add_low_or_up_case(std::vector<std::string>& vec, bool add_up) {
+    if (add_up) {
+        for (auto& str: vec) {
+            for (char& c: str) {
+                // probability is only 33% so that password is easier to memorise
+                if ((rand()%100) < 33) { c = toupper(c); }
+            }
+        }
+    } else {
+        for (auto& str: vec) {
+            for (char& c: str) {
+                if ((rand()%100) < 33) { c = tolower(c); }
+            }
+        }
+    }
 }
 
-char Generator::RandomLowerCase()
-{
+char rand_sp_char(const std::string& sp_chars) {
+    return sp_chars[rand()%sp_chars.size()];
+}
+
+char rand_low_case() {
     return (char)(rand() % 26 + 97);
 }
 
-char Generator::RandomUpperCase()
-{
+char rand_up_case() {
     return (char)(rand() % 26 + 65);
 }
 
-char Generator::RandomDigit()
-{
+char rand_digit() {
     return (char)(rand() % 10 + 48);
 }
 
-char Generator::RandomChar()
-{
+char rand_char(const std::string& sp_chars) {
     int b = rand() % 4;
-    switch (b)
-    {
-    case 0: return RandomDigit();
-    case 1: return RandomUpperCase();
-    case 2: return RandomLowerCase();
-    default: return RandomSpecialChar();
+    switch (b) {
+        case 0: return rand_digit();
+        case 1: return rand_up_case();
+        case 2: return rand_low_case();
+        default: return rand_sp_char(sp_chars);
     }
 }
 
-char Generator::AddChar(const std::string &str, bool last)
-{
-    if (last)
-    {
-        if (!ContainsSpecialChar(str)) return RandomSpecialChar();
-        else if (!has_digit(str)) return RandomDigit();
-        else if (!has_up_case(str)) return RandomUpperCase();
-        else if (!ContainsLowerCase(str)) return RandomLowerCase();
-        else return RandomChar();
+char add_char(const std::string& sp_chars, const std::string& str,
+              const std::vector<std::string>& vec, bool last) {
+    if (last) {
+        if (!has_sp_char(sp_chars, str)) return rand_sp_char(sp_chars);
+        else if (!has_digit(str)) return rand_digit();
+        else if (!has_up_case(str)) return rand_up_case();
+        else if (!has_low_case(str)) return rand_low_case();
+        else return rand_char(sp_chars);
     }
-    else
-    {
-        if (!(ContainsSpecialChar(str) || ContainsSpecialChar())) return RandomSpecialChar();
-        else if (!(has_digit(str) || ContainsDigits())) return RandomDigit();
-        else if (!(has_up_case(str) || ContainsUpperCase())) return RandomUpperCase();
-        else if (!(ContainsLowerCase(str) || ContainsLowerCase())) return RandomLowerCase();
-        else return RandomChar();
+    else {
+        if (!(has_sp_char(sp_chars, str) || has_sp_char(sp_chars, vec))) return rand_sp_char(sp_chars);
+        else if (!(has_digit(str) || has_digit(vec))) return rand_digit();
+        else if (!(has_up_case(str) || has_up_case(vec))) return rand_up_case();
+        else if (!(has_low_case(str) || has_low_case(vec))) return rand_low_case();
+        else return rand_char(sp_chars);
     }
 }
 
-std::string Generator::JoinVector()
-{
+std::string join_vec(const std::string& sp_chars, const std::vector<std::string>& vec, std::size_t len) {
     std::string password;
-    for (const std::string &str: m_temp_vector)
-        password += str + AddChar(password);
-    if (password.size() != m_length) password += AddChar(password, true);
+    for (const std::string& str : vec) {
+        password += str + add_char(sp_chars, password, vec);
+    }
+    if (password.size() != len) {
+        password += add_char(sp_chars, password, vec, true);
+    }
     return password;
 }
 
-void Generator::ReplaceChar(std::string &str, char c)
-{
-    int digit_count = 0, lower_count = 0, upper_count = 0, special_count = 0;
-    for (char &ch: str)
-    {
-        if (isdigit(ch)) digit_count++;
-        else if (islower(ch)) lower_count++;
-        else if (isupper(ch)) upper_count++;
-        else special_count++;
-        if (digit_count == 2 || lower_count == 2 || upper_count == 2 || special_count == 2)
-        {
+void replace_char(std::string& str, char c) {
+    int digit_cnt {};
+    int low_cnt {};
+    int up_cnt {};
+    int sp_cnt {};
+    for (char& ch : str) {
+        if (isdigit(ch)) digit_cnt++;
+        else if (islower(ch)) low_cnt++;
+        else if (isupper(ch)) up_cnt++;
+        else sp_cnt++;
+        if (digit_cnt == 2 || low_cnt == 2 || up_cnt == 2 || sp_cnt == 2) {
             ch = c;
             break;
         }
     }
 }
 
-void Generator::FinalCheck(std::string &str)
-{
-    if (!has_digit(str)) ReplaceChar(str, RandomDigit());
-    if (!ContainsLowerCase(str)) ReplaceChar(str, RandomLowerCase());
-    if (!has_up_case(str)) ReplaceChar(str, RandomUpperCase());
-    if (!ContainsSpecialChar(str)) ReplaceChar(str, RandomSpecialChar());
+void final_check(const std::string& sp_chars, std::string& str) {
+    if (!has_digit(str)) {
+        replace_char(str, rand_digit());
+    }
+    if (!has_low_case(str)) {
+        replace_char(str, rand_low_case());
+    }
+    if (!has_up_case(str)) {
+        replace_char(str, rand_up_case());
+    }
+    if (!has_sp_char(sp_chars, str)) {
+        replace_char(str, rand_sp_char(sp_chars));
+    }
 }
 
-void Generator::GeneratePassword()
+void Generator::GeneratePassword() // TODO: return type -> string
 {
-    m_temp_vector = m_input_vector;
-    shuffle_vec(m_temp_vector);
-    ResizeVector();
-    if (!ContainsDigits()) AddDigitsOrLetters();
-    if (!ContainsLetters()) AddDigitsOrLetters(true);
-    if (!ContainsUpperCase()) AddLowerOrUpperCase(true);
-    if (!ContainsLowerCase()) AddLowerOrUpperCase();
-    std::string password = JoinVector();
-    FinalCheck(password);
+    std::vector<std::string> vec_copy {m_input_vector};
+    shuffle_vec(vec_copy);
+    resize_vec(m_length, vec_copy);
+    if (!has_digit(vec_copy)) add_digit_or_letters(vec_copy);
+    if (!has_letter(vec_copy)) add_digit_or_letters(vec_copy, true);
+    if (!has_up_case(vec_copy)) add_low_or_up_case(vec_copy, true);
+    if (!has_low_case(vec_copy)) add_low_or_up_case(vec_copy);
+    std::string password = join_vec(m_special_chars, vec_copy, m_length);
+    final_check(m_special_chars, password);
     std::cout << "\nPassword: " << password << "\n\n";
-    //Test();
+}
+
+void resize_vec_recur(const std::vector<std::string>& vec_copy, std::size_t len, std::vector<std::string>& temp_vec) {
+    std::size_t new_len {};
+    for (std::string str: vec_copy)
+    {
+        new_len += str.size()+1;
+        if (new_len < len) temp_vec.push_back(str);
+        else if (new_len == len)
+        {
+            temp_vec.push_back(str);
+            break;
+        }
+        else // new_len > len
+        {
+            for (std::size_t i=0; i<new_len-len; i++) // TODO: does this have to be a loop?
+                if (!str.empty()) str.pop_back();
+            if (!str.empty()) temp_vec.push_back(str);
+            break;
+        }
+    }
+    if (new_len < len) resize_vec_recur(vec_copy, len-new_len, temp_vec);
+}
+
+void resize_vec(std::size_t len, std::vector<std::string>& vec_copy) {
+    std::vector<std::string> temp_vec;
+    resize_vec_recur(vec_copy, len, temp_vec);
+    vec_copy = temp_vec;
 }
 
 void shuffle_vec(std::vector<std::string>& vec) {
@@ -258,6 +258,13 @@ bool has_up_case(const std::string& str) {
 bool has_digit(const std::string& str) {
     for (char c : str) {
         if (std::isdigit(c)) { return true; }
+    }
+    return false;
+}
+
+bool has_digit(const std::vector<std::string>& vec) {
+    for (const auto& str : vec) {
+        if (has_digit(str)) { return true; }
     }
     return false;
 }
