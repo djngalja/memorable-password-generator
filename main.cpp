@@ -7,7 +7,7 @@ int main()
 
     std::cout << "GENERATE STRONG AND EASY-TO-REMEBER PASSWORDS\n\n";
     Generator g;
-    g.GeneratePassword();
+    g.generate_password();
 
     int option {};
     do
@@ -30,20 +30,20 @@ int main()
         case 0: break;
         case 1:
             {
-                g.GeneratePassword();
+                g.generate_password();
                 break;
             }
         case 2:
             {
-                g.SetLength();
-                g.GeneratePassword();
+                g.get_len();
+                g.generate_password();
                 break;
             }
         case 3:
             {
                 std::cin.ignore(10000, '\n');
-                g.SetInput();
-                g.GeneratePassword();
+                g.get_input();
+                g.generate_password();
                 break;
             }
         default:
