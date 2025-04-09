@@ -13,8 +13,8 @@
 
 class Generator {
     const std::string m_special_chars = R"( !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)";
-    std::vector<std::string> m_input_vec;
-    std::size_t m_len;
+    std::vector<std::string> m_input_vec {};
+    std::size_t m_len {};
     void Test();
 public:
     Generator();
@@ -23,12 +23,20 @@ public:
     void generate_password();
 };
 
-// helper functions:
+
+class Rand {
+    std::default_random_engine re {};
+    std::uniform_int_distribution<> dist;
+public:
+    Rand(int min_num, int max_num) : dist {min_num, max_num} {}
+    int operator()() { return dist(re); };
+};
+
 bool get_questions(const std::string&, std::vector<std::string>&);
 void shuffle_vec(std::vector<std::string>&);
 void split_input(const std::string&, std::vector<std::string>&);
 void resize_vec(std::size_t, std::vector<std::string>&);
-void resize_vec_recur(const std::vector<std::string>&,
+void resize_vec_recur(std::vector<std::string>&,
                       std::size_t, std::vector<std::string>&);
 bool has_digit(const std::string&);
 bool has_digit(const std::vector<std::string>&);
