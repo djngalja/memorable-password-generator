@@ -1,6 +1,6 @@
 #include "Generator.h"
 
-Generator::Generator() : m_input_vec{}, m_len{} {
+Generator::Generator() {
     get_input();
     get_len();
 }
@@ -44,6 +44,7 @@ void Generator::generate_password() {
     final_check(m_special_chars, password);
     std::cout << "\nPassword: " << password << "\n\n";
 }
+
 
 bool get_questions(const std::string& f_name, std::vector<std::string>& questions) {
     std::ifstream file(f_name);
@@ -255,7 +256,9 @@ char rand_sp_char(const std::string& sp_chars) {
 }
 
 char rand_digit() {
-    return (char)(rand() % 10 + 48);
+    std::string digits = "0123456789";
+    static Rand rand_int {0, 9};
+    return digits[rand_int()];
 }
 
 char rand_up_case() {
@@ -263,7 +266,9 @@ char rand_up_case() {
 }
 
 char rand_low_case() {
-    return (char)(rand() % 26 + 97);
+    std::string letters = "abcdefghijklmnopqrstuvwxyz";
+    static Rand rand_int {0, 25};
+    return letters[rand_int()];
 }
 
 char rand_char(const std::string& sp_chars) {
