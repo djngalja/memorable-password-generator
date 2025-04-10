@@ -1,10 +1,7 @@
 #include "Generator.h"
-#include <ctime>
 
 int main()
 {
-    srand(time(NULL));
-
     std::cout << "GENERATE STRONG AND EASY-TO-REMEBER PASSWORDS\n\n";
     Generator g;
     g.generate_password();
