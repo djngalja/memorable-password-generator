@@ -176,17 +176,18 @@ bool has_up_case(const std::vector<std::string>& vec) {
 }
 
 void add_low_or_up_case(std::vector<std::string>& vec, bool add_up) {
+    static Rand rand_int {0, 99};
     if (add_up) {
         for (auto& str: vec) {
             for (char& c: str) {
                 // probability is only 33% so that password is easier to memorise
-                if ((rand()%100) < 33) { c = toupper(c); }
+                if (rand_int() < 33) { c = toupper(c); }
             }
         }
     } else {
         for (auto& str: vec) {
             for (char& c: str) {
-                if ((rand()%100) < 33) { c = tolower(c); }
+                if (rand_int() < 33) { c = tolower(c); }
             }
         }
     }
@@ -252,7 +253,9 @@ bool has_sp_char(const std::string& sp_chars, const std::vector<std::string>& ve
 }
 
 char rand_sp_char(const std::string& sp_chars) {
-    return sp_chars[rand()%sp_chars.size()];
+    int sz = sp_chars.size();
+    static Rand rand_int {0, sz};
+    return sp_chars[rand_int()];
 }
 
 char rand_digit() {
@@ -262,7 +265,9 @@ char rand_digit() {
 }
 
 char rand_up_case() {
-    return (char)(rand() % 26 + 65);
+    std::string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    static Rand rand_int {0, 25};
+    return letters[rand_int()];
 }
 
 char rand_low_case() {
@@ -272,12 +277,21 @@ char rand_low_case() {
 }
 
 char rand_char(const std::string& sp_chars) {
-    int b = rand() % 4;
-    switch (b) {
-        case 0: return rand_digit();
-        case 1: return rand_up_case();
-        case 2: return rand_low_case();
-        default: return rand_sp_char(sp_chars);
+    static Rand rand_int {0, 3};
+    int c = rand_int();
+    switch (c) {
+        case 0: {
+            return rand_digit();
+        }
+        case 1: {
+            return rand_up_case();
+        }
+        case 2: {
+            return rand_low_case();
+        }
+        default: {
+            return rand_sp_char(sp_chars);
+        }
     }
 }
 
