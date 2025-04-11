@@ -73,27 +73,26 @@ void split_input(const std::string& str, std::vector<std::string>& vec) {
     }
 }
 
-void resize_vec(std::size_t len, std::vector<std::string>& vec_copy) {
+void resize_vec(std::size_t len, std::vector<std::string>& vec) {
     std::vector<std::string> temp_vec;
-    resize_vec_recur(vec_copy, len, temp_vec);
-    vec_copy = temp_vec;
+    resize_vec_recur(vec, len, temp_vec);
+    vec = temp_vec;
 }
 
-void resize_vec_recur(std::vector<std::string>& vec, std::size_t len, std::vector<std::string>& temp_vec) {
+void resize_vec_recur(const std::vector<std::string>& vec, std::size_t len, std::vector<std::string>& temp_vec) {
     std::size_t new_len {};
-    for (std::string& str : vec) {
+    for (const std::string& str : vec) {
         new_len += str.size() + 1; // every word will be followed by a random character
         if (new_len < len) {
             temp_vec.push_back(str);
         } else if (new_len == len) {
             temp_vec.push_back(str);
             break;
-        }
-        else { // new_len > len
+        } else { // new_len > len
             std::size_t diff = new_len - len;
             if (diff < str.size()) {
-                str.resize(str.size() - diff);
-                temp_vec.push_back(str);
+                std::string new_str = str.substr(0, str.size() - diff);
+                temp_vec.push_back(new_str);
             }
             break;
         }
@@ -116,30 +115,31 @@ bool has_digit(const std::vector<std::string>& vec) {
 }
 
 void add_digit_or_letters(std::vector<std::string>& vec, bool add_letters) {
-    std::map<char, char> replacements =
-    { {'b', '6'},{'q', '9'},{'S', '5'},{'l', '1'},{'O', '0'} };
-    for (const auto& i : replacements) {
-        if (has_char(vec, i.first)) { // TODO: combine this f with v
+    std::vector<std::vector<char>> replacements = {
+        {'b', '6'}, {'q', '9'}, {'S', '5'}, {'l', '1'}, {'O', '0'}
+    };
+    // Add digits by default
+    for (const auto& rep : replacements) {
+        if (has_char(vec, rep[0])) {
             for (std::string& str : vec) {
                 for (char& c : str) {
-                    if (c == i.first) { c = i.second; }
+                    if (c == rep[0]) { c = rep[1]; }
                 }
             }
-            // only 1 character replaced so that password remains human-readable
+            // Only 1 character is replaced so that the password remains human-readable
             break;
         }
     }
     if (add_letters) {
-        for (const auto& i : replacements) {
-            if (has_char(vec, i.second)) {
+        for (const auto& rep : replacements) {
+            if (has_char(vec, rep[1])) {
                 for (std::string& str : vec) {
                     for (char& c : str) {
-                        if (c == i.second) { c = i.first; }
+                        if (c == rep[1]) { c = rep[0]; }
                     }
                 }
             }
         }
-
     }
 }
 
