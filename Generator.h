@@ -6,7 +6,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <map>
 #include <algorithm>
 #include <random>
 
@@ -35,7 +34,7 @@ bool get_questions(const std::string&, std::vector<std::string>&);
 void shuffle_vec(std::vector<std::string>&);
 void split_input(const std::string&, std::vector<std::string>&);
 void resize_vec(std::size_t, std::vector<std::string>&);
-void resize_vec_recur(std::vector<std::string>&,
+void resize_vec_recur(const std::vector<std::string>&,
                       std::size_t, std::vector<std::string>&);
 bool has_digit(const std::string&);
 bool has_digit(const std::vector<std::string>&);
