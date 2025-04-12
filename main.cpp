@@ -3,7 +3,7 @@
 int main()
 {
     std::cout << "GENERATE STRONG AND EASY-TO-REMEBER PASSWORDS\n\n";
-    Generator g;
+    pswd::Generator g;
     g.generate_password();
 
     int option {};
