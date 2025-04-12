@@ -1,6 +1,6 @@
 #include "Generator.h"
 
-void Generator::Test()
+void pswd::Generator::Test()
 {
     for (int i=0; i<100; i++)
         if (!isdigit(rand_digit()))
