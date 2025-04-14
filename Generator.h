@@ -13,8 +13,8 @@ namespace pswd {
 
     class Generator {
         const std::string m_special_chars = R"( !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)";
-        std::vector<std::string> m_input_vec {};
-        std::size_t m_len {};
+        std::vector<std::string> m_input_vec { "no", "input" };
+        std::size_t m_len {16};
         void Test();
     public:
         Generator();
