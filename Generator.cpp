@@ -8,20 +8,33 @@ pswd::Generator::Generator() {
 void pswd::Generator::get_input() {
     std::vector<std::string> questions;
     if (!get_questions("security_questions.txt", questions)) {
-        // TODO
+        return;
     }
     shuffle_vec(questions); // To output questions in random order
+    std::vector<std::string> vec;
     for (int i=0; i<3; i++) {
         std::cout << i+1 << ". " << questions[i] << "\n\t";
         std::string str;
         getline(std::cin, str);
-        split_input(str, m_input_vec);
+        if (!str.empty()) {
+            split_input(str, vec);
+        }
+    }
+    if (!vec.empty()) {
+        m_input_vec = vec;
     }
 }
 
 void pswd::Generator::get_len() {
     std::cout << "Enter password length: ";
-    std::cin >> m_len; // TODO: input check
+    int len {};
+    std::cin >> len;
+    if (!std::cin) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        return;
+    }
+    if (len > 0) { m_len = len; }
 }
 
 void pswd::Generator::generate_password() {
