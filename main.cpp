@@ -1,6 +1,7 @@
 #include "Generator.h"
 
 int main() {
+    //pswd::test();
     std::cout << "GENERATE STRONG AND EASY-TO-REMEBER PASSWORDS\n\n";
     pswd::Generator g;
     g.generate_password();
