@@ -15,7 +15,6 @@ namespace pswd {
         const std::string m_special_chars = R"( !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)";
         std::vector<std::string> m_input_vec { "no", "input" };
         std::size_t m_len {16};
-        void Test();
     public:
         Generator();
         void get_input();
@@ -62,5 +61,7 @@ namespace pswd {
     char rand_char(const std::string&);
     void final_check(const std::string&, std::string& str);
     void replace_char(std::string&, char);
+
+    void test();
 }
 #endif // GENERATOR_H_INCLUDED
