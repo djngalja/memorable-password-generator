@@ -1,33 +1,25 @@
 #include "Generator.h"
+#include <cassert>
 
-void pswd::Generator::Test()
-{
-    for (int i=0; i<100; i++)
-        if (!isdigit(rand_digit()))
-        {
-            std::cout << "function RandomDigit() failed" << std::endl;
-            break;
-        }
+#undef NDEBUG
 
-    for (int i=0; i<100; i++)
-        if (!islower(rand_low_case()))
-        {
-            std::cout << "function RandomLowerCase() failed" << std::endl;
-            break;
-        }
-
-    for (int i=0; i<100; i++)
-        if (!isupper(rand_up_case()))
-        {
-            std::cout << "function RandomUpperCase() failed" << std::endl;
-            break;
-        }
-/*
-    for (int i=0; i<100; i++)
-        if (isalnum(RandomSpecialChar()))
-        {
-            std::cout << "function RandomSpecialChar() failed" << std::endl;
-            break;
-        }
-        */
+void pswd::test() {
+    const std::string sp_chars = R"( !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~)";
+    // Test pswd::final_check function
+    {
+        std::string str = "A!6!";
+        final_check(sp_chars, str);
+        assert(std::islower(str[3]));
+    }
+    // Test pswd::replace_char function
+    {
+        std::string str = "a";
+        replace_char(str, '*');
+        assert(str == "a");
+    }
+    {
+        std::string str = "Aa6!Aa6!";
+        replace_char(str, '*');
+        assert(str == "Aa6!*a6!");
+    }
 }
