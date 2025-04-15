@@ -2,7 +2,7 @@
 A C++ code to generate __strong__ and __easy-to-remember__ passwords based on the user's input. Passwords contain lower- and uppercase characters, digits and special characters. The length is customizable. <br /><br />
 _100% C++, no AI tools used._
 ## Input and output
-Users are asked 3 random [questions](security_questions.txt) related to their interests, likes, wishes, etc. <ins>The responses</ins> are used to generate passwords that have __personal meaning__ and thus are __easier to memorize__. The input is transformed by adding digits, uppercase, lowercase and special characters (if needed) to make the passwords more secure. These special characters are either added to the existing ones or replace them in a way that does not affect the __readability__.<br /><br />
+Users are asked 3 random [questions](security_questions.txt) related to their interests, likes, wishes, etc. <ins>The responses</ins> are used to generate passwords that have __personal meaning__ and thus are __easier to memorize__. The input is transformed by adding digits, uppercase, lowercase and special characters (if needed) to make the passwords more __secure__. These special characters are either added to the existing ones or replace them in a way that does not affect the __readability__.<br /><br />
 <ins>The password length</ins> is customizable. The default length is 16 characters, and the minimum is 1 character.<br /><br />
 Based on the input, users can generate as many passwords as they want to select the most memorable. They can also change the password length and/or reply to a new set of questions.
 ### References
